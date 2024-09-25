@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
         height: 20,
         width: '90%',
         resizeMode: 'contain',
-        flex: 1,
+        flex: 1
 
     },
 })
