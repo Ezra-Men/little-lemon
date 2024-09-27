@@ -1,6 +1,7 @@
 import * as React from 'react'
-import { View, Text, Image, StyleSheet} from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
 function Header(){
+    
     return (
         <View style={{backgroundColor: '#F4CE14', marginBottom: 10, flex: 0.1}}>
                <Image 

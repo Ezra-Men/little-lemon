@@ -53,4 +53,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Onboard;
+export default Onboard;
