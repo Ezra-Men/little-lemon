@@ -1,21 +1,25 @@
-import { StyleSheet, Text, View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { View } from 'react-native';
+import Banner from '../components/Banner';
+import CategoryList from '../components/CategoryList';
+import SearchBar from '../components/SearchBar';
+import MenuItems from '../components/MenuItems';
+import { useNavigation } from '@react-navigation/native';
 
+const Home = () => {
+  const navigation = useNavigation();
 
+  return (
+    <View>
+      <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+        <Text>Go to Profile</Text>
+      </TouchableOpacity>
+      <Banner />
+      <CategoryList />
+      <SearchBar />
+      <MenuItems />
+    </View>
+  );
+};
 
-function Home(){
-
-}
-
-
-
-
-
-
-
-
-
-
-export default Home
+export default Home;

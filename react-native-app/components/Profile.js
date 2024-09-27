@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TextInput, TouchableOpacity, ScrollView } from 'react-native';
-import { CheckBox } from 'react-native-elements';
-import * as ImagePicker from 'expo-image-picker';
-import { MaskedTextInput } from 'react-native-mask-text';
+import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 
-const Profile = ({ navigation }) => {
+const Profile = () => {
+  const navigation = useNavigation();
   const [firstName, setFirstName] = useState('');
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -16,10 +16,14 @@ const Profile = ({ navigation }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const storedFirstName = await AsyncStorage.getItem('firstName');
-      const storedEmail = await AsyncStorage.getItem('email');
-      setFirstName(storedFirstName);
-      setEmail(storedEmail);
+      try {
+        const storedFirstName = await AsyncStorage.getItem('firstName');
+        const storedEmail = await AsyncStorage.getItem('email');
+        setFirstName(storedFirstName);
+        setEmail(storedEmail);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
     };
     fetchData();
   }, []);
@@ -31,24 +35,33 @@ const Profile = ({ navigation }) => {
       aspect: [4, 3],
       quality: 1,
     });
+
     if (!result.cancelled) {
       setImage(result.uri);
     }
   };
 
   const handleSaveChanges = async () => {
-    await AsyncStorage.setItem('firstName', firstName);
-    await AsyncStorage.setItem('email', email);
-    await AsyncStorage.setItem('phoneNumber', phoneNumber);
-    await AsyncStorage.setItem('image', image);
-    await AsyncStorage.setItem('newsCheckbox', newsCheckbox.toString());
-    await AsyncStorage.setItem('offersCheckbox', offersCheckbox.toString());
-    Alert.alert('Changes Saved');
+    try {
+      await AsyncStorage.setItem('firstName', firstName);
+      await AsyncStorage.setItem('email', email);
+      await AsyncStorage.setItem('phoneNumber', phoneNumber);
+      await AsyncStorage.setItem('image', image);
+      await AsyncStorage.setItem('newsCheckbox', newsCheckbox.toString());
+      await AsyncStorage.setItem('offersCheckbox', offersCheckbox.toString());
+      Alert.alert('Changes Saved');
+    } catch (error) {
+      console.error('Error saving changes:', error);
+    }
   };
 
   const handleLogout = async () => {
-    await AsyncStorage.clear();
-    navigation.navigate('Onboard');
+    try {
+      await AsyncStorage.clear();
+      navigation.navigate('Onboard');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
   };
 
   return (
@@ -57,10 +70,7 @@ const Profile = ({ navigation }) => {
         <Text style={{ fontSize: 20 }}>Personal Information</Text>
         <TouchableOpacity onPress={handleImagePicker}>
           {image ? (
-            <Image
-              source={{ uri: image }}
-              style={{ width: 100, height: 100, borderRadius: 50 }}
-            />
+            <Image source={{ uri: image }} style={{ width: 100, height: 100, borderRadius: 50 }} />
           ) : (
             <View
               style={{
@@ -105,10 +115,9 @@ const Profile = ({ navigation }) => {
             borderRadius: 16,
           }}
         />
-        <MaskedTextInput
+        <TextInput
           value={phoneNumber}
           onChangeText={(text) => setPhoneNumber(text)}
-          mask="999-999-9999"
           placeholder="Phone Number"
           style={{
             height: 40,
@@ -137,17 +146,15 @@ const Profile = ({ navigation }) => {
             justifyContent: 'space-between',
           }}
         >
-          <TouchableOpacity
-            onPress={handleSaveChanges}
-            style={{
-              backgroundColor: '#F4CE14',
-              padding: 10,
-              borderRadius: 10,
-              width: 130,
-              height: 40,
-              alignItems: 'center',
-              marginTop: 20,
-            }}
+          <TouchableOpacity onPress={handleSaveChanges} style={{
+            backgroundColor: '#F4CE14',
+            padding: 10,
+            borderRadius: 10,
+            width: 130,
+            height: 40,
+            alignItems: 'center',
+            marginTop: 20,
+          }}
           >
             <Text style={{ color: '#000000' }}>Save Changes</Text>
           </TouchableOpacity>
